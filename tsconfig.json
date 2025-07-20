@@ -1,0 +1,34 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.node.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue",
+    "types/**/*.d.ts",
+    "types/**/*.ts",
+    "**/*.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "types": [
+      "vite/client",
+//      "vite-plugin-svg-icons/client",
+      "node"
+    ],
+    "outDir": "./dist",
+    "noEmit": true,
+    "baseUrl": ".",
+    "typeRoots": [
+      "./node_modules/@types/",
+      "./types"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "#/*": [
+        "types/*"
+      ]
+    }
+  }
+}
