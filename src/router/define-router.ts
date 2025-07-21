@@ -1,8 +1,8 @@
-import type { Router } from '#/index';
 import Layout from '@/layout/Layout.vue';
 import Home from '@/view/Home/Index.vue';
+import type { RouteRecordRaw } from 'vue-router';
 
-const routers: Router[] = [
+const routers: RouteRecordRaw[] = [
   {
     path: '',
     name: 'home',
@@ -13,7 +13,7 @@ const routers: Router[] = [
   },
 ];
 
-const routes: Router[] = [
+const routes: RouteRecordRaw[] = [
   {
     path: '',
     name: 'index',

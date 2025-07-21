@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-import routes from '@/router/defineRouter';
+import { createRouter, createWebHistory } from 'vue-router';
+import routes from '@/router/define-router';
 import { setupAfterEach, setupBeforeEach } from '@/router/guard';
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: routes as unknown as RouteRecordRaw[],
+  routes: routes,
 });
 
 setupBeforeEach(router);

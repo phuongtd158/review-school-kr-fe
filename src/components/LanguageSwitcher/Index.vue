@@ -23,7 +23,7 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
-import { useI18n } from '@/composables/use-i18n';
+import { useLocalI18n } from '@/composables/use-i18n';
 import { DownOutlined } from '@ant-design/icons-vue';
 import type { SupportedLocale } from '@/i18n/index';
 
@@ -36,7 +36,7 @@ export default defineComponent({
       vi: 'vi',
       kr: 'kr',
     });
-    const { locale, changeLocale, localeOptions } = useI18n();
+    const { locale, changeLocale, localeOptions } = useLocalI18n();
     const currentLocale = ref<SupportedLocale>(locale.value);
 
     const handleLocaleChange = (locale: SupportedLocale) => {

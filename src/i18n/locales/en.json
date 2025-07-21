@@ -1,3 +1,5 @@
 {
-  "xin_chao": "Hello"
+  "xin_chao": "Hello",
+  "loi_mang": "Network error, please check network!",
+  "loi_khong_xac_dinh": "Unknown error, please try again!"
 }

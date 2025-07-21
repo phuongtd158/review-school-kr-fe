@@ -1,3 +1,6 @@
 {
-  "xin_chao": "Xin chào"
+  "xin_chao": "Xin chào",
+  "loi_mang": "Lỗi mạng, vui lòng kiểm tra mạng!",
+  "loi_khong_xac_dinh": "Lỗi không xác định, vui lòng thử lại!",
+  "da_co_loi_xay_ra": "Đã có lỗi xảy ra, vui lòng thử lại sau!"
 }

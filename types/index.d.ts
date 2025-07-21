@@ -1,20 +1,8 @@
-import type { RouteRecordRedirectOption } from 'vue-router';
+import type { defineComponent } from 'vue';
 
 export type AnySafeType = any;
-export type Component<T = any> =
+
+export type Component<T = AnySafeType> =
   | ReturnType<typeof defineComponent>
   | (() => Promise<typeof import('*.vue')>)
   | (() => Promise<T>);
-
-export interface RouterMeta {
-  title: string;
-}
-
-export interface Router {
-  path: string;
-  name: string;
-  redirect?: string | RouteRecordRedirectOption;
-  meta?: RouterMeta;
-  component?: Component | (() => Promise<Component>) | string;
-  children?: Router[];
-}
