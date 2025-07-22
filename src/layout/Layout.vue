@@ -1,11 +1,7 @@
 <template>
   <a-layout>
     <app-header />
-    <a-layout-content
-      :style="{
-        height: '700px',
-        paddingTop: '64px',
-      }">
+    <a-layout-content class="!bg-white h-[1800px] pt-[64px]">
       <router-view />
     </a-layout-content>
     <app-footer />

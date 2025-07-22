@@ -1,5 +1,6 @@
 {
   "xin_chao": "안녕하세요",
   "loi_mang": "네트워크 오류입니다. 네트워크를 확인하세요!",
-  "loi_khong_xac_dinh": "알 수 없는 오류입니다. 다시 시도해 주세요!"
+  "loi_khong_xac_dinh": "알 수 없는 오류입니다. 다시 시도해 주세요!",
+  "tim_kiem_truong_hoc": "학교 검색..."
 }

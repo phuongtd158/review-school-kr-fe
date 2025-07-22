@@ -14,13 +14,13 @@
         role="dialog"
         aria-label="Loading"
         aria-live="polite">
-        <div class="loader" aria-hidden="true"></div>
+        <a-spin size="large" />
       </div>
     </transition>
   </teleport>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import { useLoadingStore } from '@/stores/use-loading-store';
 import { storeToRefs } from 'pinia';
 
@@ -34,15 +34,6 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.loader {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  animation: spin 1s linear infinite;
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);

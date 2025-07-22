@@ -2,6 +2,7 @@ import SvgIcon from '@/components/SvgIcon/Index.vue';
 import type { Component } from '#/index';
 import mixin from '@/utils/mixins/mixins';
 import { message, Modal, notification } from 'ant-design-vue';
+import tooltip from '@/utils/mixins/tooltip';
 
 export default {
   install(vue: Component): void {
@@ -16,5 +17,6 @@ export default {
     vue.config.globalProperties.$warning = Modal.warning;
 
     vue.mixin(mixin);
+    vue.mixin(tooltip);
   },
 };

@@ -12,29 +12,27 @@
         </a-menu-item>
       </a-menu>
     </template>
-    <a-button>
-      <div class="flex items-center gap-1">
-        <div><svg-icon :name="getLocaleIcon(currentLocale)" /></div>
-        <div>{{ currentLocaleName }}</div>
-        <down-outlined />
-      </div>
-    </a-button>
+    <div class="flex items-center gap-1 cursor-pointer w-14">
+      <div><svg-icon :name="getLocaleIcon(currentLocale)" /></div>
+      <div>{{ currentLocaleCode }}</div>
+      <down-outlined />
+    </div>
   </a-dropdown>
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useLocalI18n } from '@/composables/use-i18n';
 import { DownOutlined } from '@ant-design/icons-vue';
-import type { SupportedLocale } from '@/i18n/index';
+import type { SupportedLocale } from '@/i18n';
 
 export default defineComponent({
   name: 'LanguageSwitcher',
   components: { DownOutlined },
   setup() {
     const icon = ref<any>({
-      en: 'en',
-      vi: 'vi',
-      kr: 'kr',
+      en: 'en_rounded',
+      vi: 'vi_rounded',
+      kr: 'kr_rounded',
     });
     const { locale, changeLocale, localeOptions } = useLocalI18n();
     const currentLocale = ref<SupportedLocale>(locale.value);
@@ -46,15 +44,15 @@ export default defineComponent({
 
     const getLocaleIcon = (locale: SupportedLocale) => icon.value[locale];
 
-    const currentLocaleName = computed(
-      () => localeOptions.value.find(item => item.value === currentLocale.value)?.value
+    const currentLocaleCode = computed(() =>
+      localeOptions.value.find(item => item.value === currentLocale.value)?.value.toLocaleUpperCase()
     );
 
     watch(locale, newLocale => {
       currentLocale.value = newLocale;
     });
 
-    return { currentLocale, localeOptions, currentLocaleName, handleLocaleChange, getLocaleIcon };
+    return { currentLocale, localeOptions, currentLocaleCode, handleLocaleChange, getLocaleIcon };
   },
 });
 </script>

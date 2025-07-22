@@ -2,5 +2,10 @@
   "xin_chao": "Xin chào",
   "loi_mang": "Lỗi mạng, vui lòng kiểm tra mạng!",
   "loi_khong_xac_dinh": "Lỗi không xác định, vui lòng thử lại!",
-  "da_co_loi_xay_ra": "Đã có lỗi xảy ra, vui lòng thử lại sau!"
+  "da_co_loi_xay_ra": "Đã có lỗi xảy ra, vui lòng thử lại sau!",
+  "tim_kiem": "Tìm kiếm",
+  "tim_kiem_truong_hoc": "Tìm kiếm trường học...",
+  "yeu_cau_them_truong_hoc": "Yêu cầu thêm trường học",
+  "khong_tim_thay_truong_hoc": "Không tìm thấy trường học nào!!!",
+  "yeu_cau_them_truong_hoc_text": "Bạn có thể yêu cầu thêm công ty bằng cách bấm vào nút bên dưới"
 }
