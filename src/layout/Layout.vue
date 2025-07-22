@@ -1,12 +1,13 @@
 <template>
-  <a-layout>
+  <div class="min-h-screen bg-white">
     <app-header />
-    <a-layout-content class="!bg-white h-[1800px] pt-[64px]">
+    <main class="bg-white min-h-[800px] pt-16 md:pt-16">
       <router-view />
-    </a-layout-content>
+    </main>
     <app-footer />
-  </a-layout>
+  </div>
 </template>
+
 <script lang="ts">
 import { defineComponent } from 'vue';
 import AppHeader from '@/components/Header/Index.vue';
@@ -21,4 +22,14 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+main {
+  padding-top: 72px;
+}
+
+@media (max-width: 768px) {
+  main {
+    padding-top: 104px;
+  }
+}
+</style>

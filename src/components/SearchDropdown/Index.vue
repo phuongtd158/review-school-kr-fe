@@ -2,13 +2,13 @@
   <div ref="searchWrapperRef" class="relative w-full max-w-md">
     <a-input
       v-model:value="searchValue"
-      :placeholder="t('tim_kiem_truong_hoc')"
       class="hover:!border-gray-300 focus:!border-gray-300 !border-gray-300 !shadow-none"
+      :placeholder="t('tim_kiem_truong_hoc')"
       :class="classInput"
-      size="large"
-      @click="onClick"
+      :size="'large'"
+      @click="onShowDropdown"
       @input="debouncedSearch"
-      @keydown.enter="onSelectFirst">
+      @keydown.enter="onSelectFirstResult">
       <template #suffix>
         <a-tooltip :title="t('tim_kiem')">
           <search-outlined @click="debouncedSearch" class="cursor-pointer hover:text-blue-600" />
@@ -77,12 +77,14 @@ import { ref, watch } from 'vue';
 import { SearchOutlined } from '@ant-design/icons-vue';
 import { useLocalI18n } from '@/composables/use-i18n';
 import { debounce } from 'lodash';
+import { type LocationQueryRaw, type RouteParamsRawGeneric, useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'SearchDropdown',
   components: { SearchOutlined },
   setup() {
     const { t } = useLocalI18n();
+    const router = useRouter();
 
     const searchValue = ref('');
     const results = ref<any[]>([]);
@@ -93,91 +95,99 @@ export default defineComponent({
     const mockAPI = async (q: string) => {
       if (!q) return [];
       await new Promise(r => setTimeout(r, 300)); // giả lập delay
-
       // Tạo nhiều kết quả hơn để test scroll
       const baseResults = [
         {
           id: '1',
-          name: 'Reviewcongty - Review công ty',
-          category: 'Dịch vụ',
-          reviews: 126,
-          rating: 3.7,
+          name: 'Seoul National University',
+          code: 'seoul-national-university',
+          category: 'Quốc gia',
+          reviews: 980,
+          rating: 4.8,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
           id: '2',
-          name: 'Sunhouse Group',
-          category: 'Sản phẩm',
-          reviews: 12,
-          rating: 2.3,
+          name: 'Korea Advanced Institute of Science and Technology (KAIST)',
+          code: 'kaist',
+          category: 'Công nghệ',
+          reviews: 870,
+          rating: 4.7,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
           id: '3',
-          name: 'FPT Software',
-          category: 'Công nghệ',
-          reviews: 450,
-          rating: 4.2,
+          name: 'Yonsei University',
+          code: 'yonsei-university',
+          category: 'Tư thục',
+          reviews: 760,
+          rating: 4.5,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
           id: '4',
-          name: 'Vietcombank',
-          category: 'Ngân hàng',
-          reviews: 89,
-          rating: 3.9,
+          name: 'Korea University',
+          code: 'korea-university',
+          category: 'Tư thục',
+          reviews: 730,
+          rating: 4.4,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
           id: '5',
-          name: 'Vingroup',
-          category: 'Tập đoàn',
-          reviews: 234,
-          rating: 4.1,
+          name: 'POSTECH (Pohang University of Science and Technology)',
+          code: 'postech',
+          category: 'Công nghệ',
+          reviews: 610,
+          rating: 4.6,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
           id: '6',
-          name: 'Shopee Vietnam',
-          category: 'Thương mại điện tử',
-          reviews: 567,
-          rating: 4.0,
+          name: 'Hanyang University',
+          code: 'hanyang-university',
+          category: 'Tư thục',
+          reviews: 580,
+          rating: 4.3,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
           id: '7',
-          name: 'Grab Vietnam',
-          category: 'Công nghệ',
-          reviews: 123,
-          rating: 3.8,
+          name: 'Sungkyunkwan University (SKKU)',
+          code: 'sungkyunkwan-university',
+          category: 'Tư thục',
+          reviews: 540,
+          rating: 4.2,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
           id: '8',
-          name: 'Masan Group',
-          category: 'Thực phẩm',
-          reviews: 67,
-          rating: 3.5,
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
-        },
-        {
-          id: '9',
-          name: 'Techcombank',
-          category: 'Ngân hàng',
-          reviews: 95,
+          name: 'Ewha Womans University',
+          code: 'ewha-womans-university',
+          category: 'Nữ sinh',
+          reviews: 490,
           rating: 4.1,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
         {
+          id: '9',
+          name: 'Kyung Hee University',
+          code: 'kyung-hee-university',
+          category: 'Tư thục',
+          reviews: 460,
+          rating: 4,
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        },
+        {
           id: '10',
-          name: 'VinFast',
-          category: 'Ô tô',
-          reviews: 78,
-          rating: 3.6,
+          name: 'Chung-Ang University',
+          code: 'chung-ang-university',
+          category: 'Tư thục',
+          reviews: 420,
+          rating: 3.9,
           logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
         },
       ];
-
       return baseResults.filter(
         item =>
           item.name.toLowerCase().includes(q.toLowerCase()) || item.category.toLowerCase().includes(q.toLowerCase())
@@ -221,7 +231,7 @@ export default defineComponent({
       performSearch(query);
     }, 300);
 
-    const onClick = () => {
+    const onShowDropdown = () => {
       if (searchValue.value?.trim()) {
         showDropdown.value = true;
         // Nếu chưa có results thì search luôn
@@ -232,29 +242,33 @@ export default defineComponent({
     };
 
     const onSelect = (item: any) => {
-      searchValue.value = item.name;
+      searchValue.value = '';
       showDropdown.value = false;
-      window.location.href = `/schools/${item.id}`;
+      router.push({ name: 'university-detail', params: { code: item.code } });
     };
 
     const onViewAll = () => {
       showDropdown.value = false;
-      window.location.href = `/search?q=${encodeURIComponent(searchValue.value)}`;
+      router.push({ name: 'search', query: { q: searchValue.value } });
     };
 
-    const onSelectFirst = () => {
+    const navitageTo = (name: string, params?: RouteParamsRawGeneric, query?: LocationQueryRaw) => {
+      searchValue.value = '';
+      showDropdown.value = false;
+      router.push({ name, params, query });
+    };
+
+    const onSelectFirstResult = () => {
       if (results.value.length > 0) {
         onSelect(results.value[0]);
       }
     };
 
-    // Watch searchValue để handle empty value
     watch(searchValue, newVal => {
       if (!newVal?.trim()) {
         showDropdown.value = false;
         results.value = [];
         isLoading.value = false;
-        // Cancel pending debounced calls
         debouncedSearch.cancel();
       }
     });
@@ -264,7 +278,7 @@ export default defineComponent({
     });
 
     const handleClickOutside = (event: MouseEvent) => {
-      const wrapper = searchWrapperRef.value;
+      const wrapper = searchWrapperRef.value as HTMLElement;
       if (wrapper && !wrapper.contains(event.target as Node)) {
         showDropdown.value = false;
       }
@@ -287,11 +301,11 @@ export default defineComponent({
       isLoading,
       searchWrapperRef,
       t,
-      onClick,
+      onShowDropdown,
       debouncedSearch,
       onSelect,
       onViewAll,
-      onSelectFirst,
+      onSelectFirstResult,
     };
   },
 });
@@ -334,8 +348,5 @@ export default defineComponent({
   height: 1px;
   background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
   pointer-events: none;
-}
-.dropdown-seamless {
-  transform: translateY(-13px);
 }
 </style>

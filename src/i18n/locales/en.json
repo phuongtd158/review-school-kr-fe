@@ -2,5 +2,6 @@
   "xin_chao": "Hello",
   "loi_mang": "Network error, please check network!",
   "loi_khong_xac_dinh": "Unknown error, please try again!",
-  "tim_kiem_truong_hoc": "Search for schools..."
+  "tim_kiem_truong_hoc": "Search for schools...",
+  "404_title": "Sorry, the page you visited does not exist."
 }

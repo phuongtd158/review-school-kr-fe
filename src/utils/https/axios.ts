@@ -46,6 +46,8 @@ apiClient.interceptors.request.use(
     if (!config.skipLoading) {
       getLoadingStore().startLoading();
     }
+    config.headers['Accept-Locale'] =
+      typeof i18n.global.locale === 'string' ? i18n.global.locale : i18n.global.locale.value;
     return config;
   },
   (error: AxiosError) => {
