@@ -1,6 +1,7 @@
 <template>
   <div ref="searchWrapperRef" class="relative w-full max-w-md">
     <a-input
+      ref="inputSearchRef"
       v-model:value="searchValue"
       class="hover:!border-gray-300 focus:!border-gray-300 !border-gray-300 !shadow-none"
       :placeholder="t('tim_kiem_truong_hoc')"
@@ -8,10 +9,16 @@
       :size="'large'"
       @click="onShowDropdown"
       @input="debouncedSearch"
-      @keydown.enter="onSelectFirstResult">
+      @keydown.enter="onViewAll">
       <template #suffix>
-        <a-tooltip :title="t('tim_kiem')">
-          <search-outlined @click="debouncedSearch" class="cursor-pointer hover:text-blue-600" />
+        <button
+          v-if="showButtonSearch"
+          class="absolute right-1 top-1 bottom-1 bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full text-sm font-semibold transition"
+          @click="onViewAll">
+          {{ t('tim_kiem') }}
+        </button>
+        <a-tooltip v-else :title="t('tim_kiem')">
+          <search-outlined @click="onViewAll" class="cursor-pointer hover:text-blue-600" />
         </a-tooltip>
       </template>
     </a-input>
@@ -22,12 +29,10 @@
       <!-- Loading state -->
       <template v-if="isLoading">
         <div class="flex items-center justify-center p-6">
-          <!--          <div class="text-sm text-gray-500">Đang tìm kiếm...</div>-->
           <a-spin />
         </div>
       </template>
 
-      <!-- Results with scrollable container -->
       <template v-else-if="results.length">
         <div class="max-h-72 overflow-y-auto custom-scrollbar">
           <div
@@ -47,7 +52,6 @@
         </div>
       </template>
 
-      <!-- No results -->
       <template v-else>
         <div class="flex flex-col items-center justify-center text-center p-6">
           <div class="text-center">
@@ -60,7 +64,6 @@
         </div>
       </template>
 
-      <!-- Footer actions -->
       <div
         v-if="!isLoading"
         class="text-center rounded-b-2xl py-3 border-t border-t-gray-300 hover:bg-gray-100 cursor-pointer text-sm font-medium flex-shrink-0 bg-white"
@@ -77,12 +80,22 @@ import { ref, watch } from 'vue';
 import { SearchOutlined } from '@ant-design/icons-vue';
 import { useLocalI18n } from '@/composables/use-i18n';
 import { debounce } from 'lodash';
-import { type LocationQueryRaw, type RouteParamsRawGeneric, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'SearchDropdown',
+  props: {
+    inputAdditionClass: {
+      type: String,
+      required: false,
+    },
+    showButtonSearch: {
+      type: Boolean,
+      default: () => false,
+    },
+  },
   components: { SearchOutlined },
-  setup() {
+  setup(props) {
     const { t } = useLocalI18n();
     const router = useRouter();
 
@@ -91,6 +104,7 @@ export default defineComponent({
     const showDropdown = ref(false);
     const isLoading = ref(false);
     const searchWrapperRef = ref<HTMLElement | null>(null);
+    const inputSearchRef = ref<HTMLElement | null>(null);
 
     const mockAPI = async (q: string) => {
       if (!q) return [];
@@ -216,7 +230,6 @@ export default defineComponent({
       }
     };
 
-    // Tạo debounced search function với lodash
     const debouncedSearch = debounce(() => {
       const query = searchValue.value?.trim();
 
@@ -248,14 +261,10 @@ export default defineComponent({
     };
 
     const onViewAll = () => {
+      if (!searchValue.value.trim()) return;
       showDropdown.value = false;
+      (inputSearchRef.value as HTMLElement)?.blur();
       router.push({ name: 'search', query: { q: searchValue.value } });
-    };
-
-    const navitageTo = (name: string, params?: RouteParamsRawGeneric, query?: LocationQueryRaw) => {
-      searchValue.value = '';
-      showDropdown.value = false;
-      router.push({ name, params, query });
     };
 
     const onSelectFirstResult = () => {
@@ -274,7 +283,10 @@ export default defineComponent({
     });
 
     const classInput = computed(() => {
-      return showDropdown.value && searchValue.value?.trim() ? '!rounded-t-2xl !rounded-b-none' : '!rounded-4xl';
+      const defaultClass = 'hover:!border-gray-300 focus:!border-gray-300 !border-gray-300 !shadow-none';
+      const roundedClass =
+        showDropdown.value && searchValue.value?.trim() ? '!rounded-t-2xl !rounded-b-none' : '!rounded-4xl';
+      return [defaultClass, roundedClass, props.inputAdditionClass || ''].join(' ').trim();
     });
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -300,6 +312,7 @@ export default defineComponent({
       showDropdown,
       isLoading,
       searchWrapperRef,
+      inputSearchRef,
       t,
       onShowDropdown,
       debouncedSearch,

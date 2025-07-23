@@ -32,7 +32,7 @@
             <a-button
               type="primary"
               shape="round"
-              size="small"
+              size="middle"
               class="bg-blue-600 hover:bg-blue-700 border-none text-white"
               :icon="h(PlusOutlined)">
               {{ t('yeu_cau_them_truong_hoc') }}
