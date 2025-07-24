@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-white py-16 px-6 md:px-16 flex flex-col md:flex-row items-center justify-between gap-8">
+  <section class="bg-white py-[10vh] flex flex-col md:flex-row items-center justify-between gap-8">
     <!-- Left content -->
     <div class="flex-1">
       <h2 class="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
@@ -26,14 +26,26 @@
         class="w-full max-w-md mx-auto relative right-0" />
     </div>
   </section>
+
+  <div class="mt-4 flex flex-col md:flex-row gap-6">
+    <div class="flex-1">
+      <school-tabs />
+    </div>
+    <div class="w-full md:w-[350px] flex-shrink-0">
+      <newest-reviews />
+    </div>
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import { useLocalI18n } from '@/composables/use-i18n';
 import { callApiTest } from '@/service/home';
 import SearchDropdown from '@/components/SearchDropdown/Index.vue';
+import SchoolTabs from '@/components/SchoolTab/Index.vue';
+import NewestReviews from '@/components/NewestReviews/Index.vue';
+
 export default defineComponent({
-  components: { SearchDropdown },
+  components: { NewestReviews, SchoolTabs, SearchDropdown },
   setup() {
     const { t } = useLocalI18n();
     const typingText = ref('');

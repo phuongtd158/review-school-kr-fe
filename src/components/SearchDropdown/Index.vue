@@ -13,7 +13,7 @@
       <template #suffix>
         <button
           v-if="showButtonSearch"
-          class="absolute right-1 top-1 bottom-1 bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full text-sm font-semibold transition"
+          class="absolute right-1 top-1 bottom-1 bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full text-sm font-semibold transition cursor-pointer"
           @click="onViewAll">
           {{ t('tim_kiem') }}
         </button>

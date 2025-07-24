@@ -1,5 +1,5 @@
 <template>
-  <a-layout-footer class="!bg-white border-t border-gray-200 text-center py-6">
+  <a-layout-footer class="!bg-white border-t border-gray-200 text-center py-6 mt-12">
     <!-- Link trên -->
     <div class="space-x-4 text-sm text-blue-600 font-medium mb-4">
       <a href="#">Yêu cầu thêm công ty</a>
