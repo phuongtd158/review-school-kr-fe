@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-white">
     <app-header />
-    <main class="bg-white min-h-[800px] pt-16 md:pt-16">
+    <a-layout-content class="max-w-screen-xl mx-auto px-4 bg-white min-h-[800px] pt-16 md:pt-16">
       <router-view />
-    </main>
+    </a-layout-content>
     <app-footer />
   </div>
 </template>
@@ -23,13 +23,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-main {
+:deep(.ant-layout-content) {
   padding-top: 72px;
 }
 
-@media (max-width: 768px) {
-  main {
-    padding-top: 104px;
+@media (max-width: 767px) {
+  :deep(.ant-layout-content) {
+    padding-top: 108px;
   }
 }
 </style>
