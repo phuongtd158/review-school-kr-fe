@@ -6,13 +6,15 @@
       </transition>
     </router-view>
     <global-loading />
+    <scroll-to-top />
   </a-config-provider>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue';
 import GlobalLoading from '@/components/GlobalLoading/Index.vue';
+import ScrollToTop from '@/components/ScrollToTop/Index.vue';
 export default defineComponent({
-  components: { GlobalLoading },
+  components: { ScrollToTop, GlobalLoading },
   setup() {
     return {};
   },

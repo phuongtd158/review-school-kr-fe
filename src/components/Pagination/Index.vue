@@ -1,59 +1,76 @@
 <template>
   <div class="flex items-center justify-center gap-2 mt-6">
-    <button
-      class="w-10 h-10 rounded-full flex items-center justify-center text-xl bg-gray-100 text-gray-400 hover:bg-gray-200 transition"
+    <!-- Prev -->
+    <a-button
+      shape="circle"
       :disabled="currentPage === 1"
-      @click="$emit('update:page', currentPage - 1)">
+      @click="$emit('update:page', currentPage - 1)"
+      aria-label="Previous Page">
       &lt;
-    </button>
+    </a-button>
+
+    <!-- Pages -->
     <template v-for="item in pagesToShow" :key="item">
-      <button
+      <a-button
         v-if="item !== '...'"
-        class="w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition"
-        :class="item === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-        @click="$emit('update:page', item)">
+        shape="circle"
+        :class="item === currentPage ? '!bg-blue-500 !text-white' : ''"
+        @click="() => item !== currentPage && $emit('update:page', item)"
+        :aria-current="item === currentPage ? 'page' : undefined">
         {{ item }}
-      </button>
-      <span v-else class="w-10 h-10 flex items-center justify-center text-lg text-gray-400">...</span>
+      </a-button>
+      <span v-else class="w-10 h-10 flex items-center justify-center text-lg text-gray-400 select-none">...</span>
     </template>
-    <button
-      class="w-10 h-10 rounded-full flex items-center justify-center text-xl bg-gray-100 text-gray-400 hover:bg-gray-200 transition"
+
+    <!-- Next -->
+    <a-button
+      shape="circle"
       :disabled="currentPage === totalPages"
-      @click="$emit('update:page', currentPage + 1)">
+      @click="$emit('update:page', currentPage + 1)"
+      aria-label="Next Page">
       &gt;
-    </button>
+    </a-button>
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue';
-const props = defineProps<{
-  currentPage: number;
-  totalPages: number;
-}>();
+<script lang="ts">
+import { computed, defineComponent } from 'vue';
 
-// Logic hiển thị các trang, dấu ...
-const pagesToShow = computed(() => {
-  const pages: (number | string)[] = [];
-  if (props.totalPages <= 7) {
-    for (let i = 1; i <= props.totalPages; i++) pages.push(i);
-  } else {
-    if (props.currentPage <= 4) {
-      pages.push(1, 2, 3, 4, 5, '...', props.totalPages);
-    } else if (props.currentPage >= props.totalPages - 3) {
-      pages.push(
-        1,
-        '...',
-        props.totalPages - 4,
-        props.totalPages - 3,
-        props.totalPages - 2,
-        props.totalPages - 1,
-        props.totalPages
-      );
-    } else {
-      pages.push(1, '...', props.currentPage - 1, props.currentPage, props.currentPage + 1, '...', props.totalPages);
-    }
-  }
-  return pages;
+export default defineComponent({
+  name: 'Pagination',
+  props: {
+    currentPage: {
+      type: Number,
+      required: true,
+    },
+    totalPages: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props) {
+    const pagesToShow = computed(() => {
+      const { currentPage, totalPages } = props;
+      const pages: (number | string)[] = [];
+
+      if (totalPages <= 7) {
+        return Array.from({ length: totalPages }, (_, i) => i + 1);
+      }
+
+      const addPages = (arr: (number | string)[]) => pages.push(...arr);
+
+      if (currentPage <= 4) {
+        addPages([1, 2, 3, 4, 5, '...', totalPages]);
+      } else if (currentPage >= totalPages - 3) {
+        addPages([1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]);
+      } else {
+        addPages([1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages]);
+      }
+
+      return pages;
+    });
+
+    return { pagesToShow };
+  },
 });
 </script>

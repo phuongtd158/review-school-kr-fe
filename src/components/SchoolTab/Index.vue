@@ -79,7 +79,7 @@ export default defineComponent({
     const allSchools = [
       {
         id: 1,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Quốc gia TP.HCM',
         reviews: 12,
         type: 'Đại học',
@@ -88,7 +88,7 @@ export default defineComponent({
       },
       {
         id: 2,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Bách Khoa TP.HCM',
         reviews: 8,
         type: 'Đại học',
@@ -97,7 +97,7 @@ export default defineComponent({
       },
       {
         id: 3,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Khoa học Tự nhiên',
         reviews: 10,
         type: 'Đại học',
@@ -106,7 +106,7 @@ export default defineComponent({
       },
       {
         id: 4,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Kinh tế - Luật',
         reviews: 7,
         type: 'Đại học',
@@ -115,7 +115,7 @@ export default defineComponent({
       },
       {
         id: 5,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Khoa học Tự nhiên Hà Nội',
         reviews: 9,
         type: 'Đại học',
@@ -124,7 +124,7 @@ export default defineComponent({
       },
       {
         id: 6,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Bách Khoa Hà Nội',
         reviews: 15,
         type: 'Đại học',
@@ -133,7 +133,7 @@ export default defineComponent({
       },
       {
         id: 7,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Kinh tế Quốc dân',
         reviews: 11,
         type: 'Đại học',
@@ -142,7 +142,7 @@ export default defineComponent({
       },
       {
         id: 8,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Ngoại thương',
         reviews: 13,
         type: 'Đại học',
@@ -151,7 +151,7 @@ export default defineComponent({
       },
       {
         id: 9,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Y Dược TP.HCM',
         reviews: 6,
         type: 'Đại học',
@@ -160,7 +160,7 @@ export default defineComponent({
       },
       {
         id: 10,
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Harvard_University_shield.png',
+        logo: 'https://congtytui.me/storage/images/companies/nodo-jsc.png',
         name: 'Đại học Sư phạm Hà Nội',
         reviews: 5,
         type: 'Đại học',
@@ -178,7 +178,11 @@ export default defineComponent({
 
     const goToPage = (p: number) => {
       if (p < 1 || p > totalPages.value) return;
+      loading.value = true;
       page.value = p;
+      setTimeout(() => {
+        loading.value = false;
+      }, 800);
     };
 
     const onChangeTab = (key: string) => {
