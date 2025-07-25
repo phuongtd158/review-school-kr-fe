@@ -1,12 +1,20 @@
 <template>
   <div class="bg-white rounded-xl shadow p-4">
     <!-- Tabs -->
-    <a-tabs v-model:activeKey="activeTabKey" class="custom-tabs" @change="onChangeTab">
+    <a-tabs
+      v-model:activeKey="activeTabKey"
+      class="custom-tabs"
+      @change="onChangeTab"
+      :size="isMobile ? 'small' : 'default'"
+      :tab-position="'top'"
+      :type="'line'"
+      :more-icon="'...'"
+      :hide-add="true">
       <a-tab-pane v-for="tab in tabs" :key="tab.key">
         <template #tab>
-          <span class="flex items-center gap-2">
-            <span v-if="tab.icon" v-html="tab.icon"></span>
-            {{ tab.label }}
+          <span class="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+            <span v-if="tab.icon" v-html="tab.icon" class="text-xs md:text-sm"></span>
+            <span class="whitespace-nowrap">{{ tab.label }}</span>
           </span>
         </template>
       </a-tab-pane>
@@ -23,37 +31,32 @@
         class="flex items-start gap-4 p-4 transition-shadow bg-white border-b border-b-gray-200">
         <!-- Logo -->
         <img :src="school.logo" alt="logo" class="w-16 h-16 object-contain" />
-
         <!-- Nội dung -->
         <div class="flex-1 space-y-1">
           <!-- Tên trường -->
           <div class="text-lg font-semibold text-gray-900">{{ school.name }}</div>
-
           <!-- Đánh giá -->
           <div class="flex items-center gap-2 text-sm text-gray-500">
             <span class="bg-green-100 text-green-600 font-medium px-2 py-0.5 rounded-full text-xs">5 ⭐</span>
             <span>{{ school.reviews }} đánh giá</span>
           </div>
-
           <!-- Loại & Quy mô -->
           <div class="flex items-center gap-4 text-sm text-gray-500">
             <span>🏢 {{ school.type }}</span>
             <span>👥 {{ school.size }}</span>
           </div>
-
           <!-- Địa chỉ -->
           <div class="text-sm text-gray-400">📍 {{ school.address }}</div>
         </div>
       </div>
     </div>
-
     <!-- Phân trang -->
     <pagination :currentPage="page" :totalPages="totalPages" @update:page="goToPage" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue';
 import Pagination from '@/components/Pagination/Index.vue';
 import SkeletonItem from '@/components/SkeletonItem/Index.vue';
 
@@ -74,6 +77,7 @@ export default defineComponent({
     const activeTabKey = ref('latest');
     const activeTab = ref(0);
     const loading = ref(false);
+    const isMobile = ref(false);
 
     // Fake data
     const allSchools = [
@@ -196,6 +200,19 @@ export default defineComponent({
       }, 800);
     };
 
+    const checkIsMobile = () => {
+      isMobile.value = window.innerWidth < 768;
+    };
+
+    onMounted(() => {
+      checkIsMobile();
+      window.addEventListener('resize', checkIsMobile);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkIsMobile);
+    });
+
     return {
       tabs,
       activeTab,
@@ -208,29 +225,61 @@ export default defineComponent({
       goToPage,
       onChangeTab,
       activeTabKey,
+      isMobile,
     };
   },
 });
 </script>
 <style scoped>
+.custom-tabs {
+  /* Force hiển thị more button trên mobile */
+  --ant-tabs-bar-margin: 0;
+}
+
 .custom-tabs :deep(.ant-tabs-nav) {
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 }
 
 .custom-tabs :deep(.ant-tabs-tab) {
-  padding: 0.5rem 1rem;
-  font-weight: 600;
-  color: #6b7280;
-  transition: all 0.3s ease;
+  padding: 8px 12px;
+  margin-right: 0;
 }
 
-.custom-tabs :deep(.ant-tabs-tab-active) {
-  color: #2563eb !important;
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .custom-tabs :deep(.ant-tabs-nav-wrap) {
+    width: 100%;
+  }
+  .custom-tabs :deep(.ant-tabs-nav-list)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .custom-tabs :deep(.ant-tabs-tab) {
+    padding: 6px 8px;
+    font-size: 12px;
+    flex-shrink: 0;
+    min-width: auto;
+  }
+
+  .custom-tabs :deep(.ant-tabs-nav-operations) {
+    /* Đảm bảo more button hiển thị */
+    display: flex !important;
+    flex-shrink: 0;
+  }
+
+  .custom-tabs :deep(.ant-tabs-nav-more) {
+    /* Style cho more button */
+    display: block !important;
+    padding: 6px 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    margin-left: 4px;
+  }
 }
 
-.custom-tabs :deep(.ant-tabs-ink-bar) {
-  background-color: #2563eb;
-  height: 3px;
+/* Force hiển thị operations khi cần */
+.custom-tabs :deep(.ant-tabs-nav-operations) {
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 </style>

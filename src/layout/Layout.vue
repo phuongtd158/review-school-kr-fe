@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-white">
     <app-header />
-    <a-layout-content class="max-w-screen-xl mx-auto px-4 bg-white min-h-[100vh] pt-16 md:pt-16">
+    <a-layout-content class="max-w-screen-xl mx-auto px-4 bg-white min-h-screen pt-16 md:pt-16">
       <router-view />
     </a-layout-content>
     <app-footer />

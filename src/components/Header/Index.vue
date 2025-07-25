@@ -23,7 +23,7 @@
       <!-- Mobile Layout (below md) -->
       <div class="md:hidden py-3">
         <!-- Top Row: Logo, Button, Language Switcher -->
-        <div class="flex items-center justify-between gap-2 mb-3">
+        <div v-if="scrollY < 100" class="flex items-center justify-between gap-2 mb-3">
           <div class="flex items-center gap-2 min-w-0 cursor-pointer" @click="navigateToHome">
             <svg-icon name="vite" class="flex-shrink-0" />
             <span class="text-lg font-semibold text-gray-800 truncate">REVIEW UNIVERSITY</span>
@@ -42,8 +42,17 @@
         </div>
 
         <!-- Bottom Row: Search Input -->
-        <div class="w-full flex justify-center">
+        <div class="w-full flex justify-center gap-5">
+          <div
+            v-if="scrollY >= 100"
+            class="md:hidden flex items-center gap-2 min-w-0 cursor-pointer"
+            @click="navigateToHome">
+            <svg-icon name="vite" class="flex-shrink-0" />
+          </div>
           <search-dropdown />
+          <div v-if="scrollY >= 100" class="flex items-center gap-2 flex-shrink-0">
+            <language-switcher />
+          </div>
         </div>
       </div>
     </div>
@@ -51,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import LanguageSwitcher from '@/components/LanguageSwitcher/Index.vue';
 import { useLocalI18n } from '@/composables/use-i18n';
@@ -64,12 +73,25 @@ export default defineComponent({
   setup() {
     const { t } = useLocalI18n();
     const router = useRouter();
+    const scrollY = ref(window.scrollY);
 
     const navigateToHome = () => {
       router.push({ path: '/' });
     };
 
-    return { t, h, navigateToHome, PlusOutlined };
+    const handleScroll = () => {
+      scrollY.value = window.scrollY;
+    };
+
+    onMounted(() => {
+      window.addEventListener('scroll', handleScroll);
+    });
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('scroll', handleScroll);
+    });
+
+    return { scrollY, t, h, navigateToHome, PlusOutlined };
   },
 });
 </script>
