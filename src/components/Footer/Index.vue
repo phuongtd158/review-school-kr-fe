@@ -1,7 +1,7 @@
 <template>
   <a-layout-footer class="!bg-white border-t border-gray-200 text-center py-6 mt-12">
     <!-- Link trên -->
-    <div class="space-x-4 text-sm text-blue-600 font-medium mb-4">
+    <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm font-medium text-blue-600 mb-6">
       <a href="#">Yêu cầu thêm công ty</a>
       <a href="#">Feedback</a>
       <a href="#">FAQ</a>
@@ -10,7 +10,7 @@
     </div>
     <!-- Từ khóa -->
     <div class="flex flex-wrap justify-center items-center gap-2 text-sm">
-      <span class="font-semibold text-gray-800">Từ khóa:</span>
+      <span class="font-semibold text-gray-800 mr-2">Từ khóa:</span>
       <a-button size="small">Review Công Ty</a-button>
       <a-button size="small">Đánh Giá Công Ty</a-button>
       <a-button size="small">Đánh Giá Nơi Làm Việc</a-button>

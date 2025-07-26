@@ -81,6 +81,8 @@ import { SearchOutlined } from '@ant-design/icons-vue';
 import { useLocalI18n } from '@/composables/use-i18n';
 import { debounce } from 'lodash';
 import { useRouter } from 'vue-router';
+import { storage } from '@/utils/storage';
+import type { AnySafeType } from '#/index';
 
 export default defineComponent({
   name: 'SearchDropdown',
@@ -257,6 +259,7 @@ export default defineComponent({
     const onSelect = (item: any) => {
       searchValue.value = '';
       showDropdown.value = false;
+      saveRecentlyViewed(item);
       router.push({ name: 'university-detail', params: { code: item.code } });
     };
 
@@ -265,12 +268,6 @@ export default defineComponent({
       showDropdown.value = false;
       (inputSearchRef.value as HTMLElement)?.blur();
       router.push({ name: 'search', query: { q: searchValue.value } });
-    };
-
-    const onSelectFirstResult = () => {
-      if (results.value.length > 0) {
-        onSelect(results.value[0]);
-      }
     };
 
     watch(searchValue, newVal => {
@@ -296,6 +293,15 @@ export default defineComponent({
       }
     };
 
+    const saveRecentlyViewed = (school: AnySafeType) => {
+      const key = 'recentViewed';
+      const maxItems = 5;
+      const list = storage.get(key, []) ?? [];
+      const updated = [school, ...list.filter((item: AnySafeType) => item.id !== school.id)];
+      if (updated.length > maxItems) updated.length = maxItems;
+      storage.set(key, updated);
+    };
+
     onMounted(() => {
       document.addEventListener('click', handleClickOutside);
     });
@@ -318,7 +324,6 @@ export default defineComponent({
       debouncedSearch,
       onSelect,
       onViewAll,
-      onSelectFirstResult,
     };
   },
 });

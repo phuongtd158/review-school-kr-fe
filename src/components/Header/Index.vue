@@ -1,13 +1,17 @@
 <template>
-  <a-layout-header class="fixed top-0 left-0 w-full z-50 !bg-white shadow-sm">
+  <a-layout-header
+    :class="[
+      'fixed top-0 left-0 w-full z-50 !bg-white shadow-sm transition-all duration-300 ease-out',
+      scrollY >= 100 ? 'header-bounce' : '',
+    ]">
     <div class="max-w-screen-xl mx-auto px-4">
-      <!-- Desktop Layout (md and up) -->
+      <!-- Desktop Layout-->
       <div class="hidden md:flex items-center justify-between gap-4 py-4">
         <div class="flex items-center gap-2 cursor-pointer" @click="navigateToHome">
           <svg-icon name="vite" />
           <span class="text-xl font-semibold text-gray-800 whitespace-nowrap">REVIEW UNIVERSITY</span>
         </div>
-        <search-dropdown />
+        <search-dropdown v-if="scrollY >= 100" />
         <div class="flex items-center gap-2">
           <a-button
             type="primary"
@@ -19,10 +23,11 @@
           <language-switcher />
         </div>
       </div>
+      <!-- Desktop Layout-->
 
-      <!-- Mobile Layout (below md) -->
+      <!-- Mobile Layout -->
       <div class="md:hidden py-3">
-        <!-- Top Row: Logo, Button, Language Switcher -->
+        <!-- Logo, Button, Language Switcher -->
         <div v-if="scrollY < 100" class="flex items-center justify-between gap-2 mb-3">
           <div class="flex items-center gap-2 min-w-0 cursor-pointer" @click="navigateToHome">
             <svg-icon name="vite" class="flex-shrink-0" />
@@ -40,8 +45,9 @@
             <language-switcher />
           </div>
         </div>
+        <!-- Logo, Button, Language Switcher -->
 
-        <!-- Bottom Row: Search Input -->
+        <!-- Search Input -->
         <div class="w-full flex justify-center gap-5">
           <div
             v-if="scrollY >= 100"
@@ -54,13 +60,15 @@
             <language-switcher />
           </div>
         </div>
+        <!-- Search Input -->
       </div>
+      <!-- Mobile Layout -->
     </div>
   </a-layout-header>
 </template>
 
 <script lang="ts">
-import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import LanguageSwitcher from '@/components/LanguageSwitcher/Index.vue';
 import { useLocalI18n } from '@/composables/use-i18n';
@@ -79,8 +87,14 @@ export default defineComponent({
       router.push({ path: '/' });
     };
 
+    const isScrolledEnough = computed(() => scrollY.value >= 100);
+    const hasScrolledOnce = ref(false);
+
     const handleScroll = () => {
       scrollY.value = window.scrollY;
+      if (scrollY.value >= 100) {
+        hasScrolledOnce.value = true;
+      }
     };
 
     onMounted(() => {
@@ -91,7 +105,7 @@ export default defineComponent({
       window.removeEventListener('scroll', handleScroll);
     });
 
-    return { scrollY, t, h, navigateToHome, PlusOutlined };
+    return { scrollY, isScrolledEnough, hasScrolledOnce, t, h, navigateToHome, PlusOutlined };
   },
 });
 </script>
@@ -99,5 +113,23 @@ export default defineComponent({
 <style scoped>
 :deep(.ant-btn > span) {
   display: inline-flex;
+}
+.header-bounce {
+  animation: headerSlide 0.35s ease-out;
+}
+
+@keyframes headerSlide {
+  0% {
+    transform: translateY(-12px);
+    opacity: 0.9;
+  }
+  70% {
+    transform: translateY(2px);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>

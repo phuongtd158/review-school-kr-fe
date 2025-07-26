@@ -8,7 +8,6 @@
       :size="isMobile ? 'small' : 'default'"
       :tab-position="'top'"
       :type="'line'"
-      :more-icon="'...'"
       :hide-add="true">
       <a-tab-pane v-for="tab in tabs" :key="tab.key">
         <template #tab>
@@ -265,15 +264,6 @@ export default defineComponent({
     /* Đảm bảo more button hiển thị */
     display: flex !important;
     flex-shrink: 0;
-  }
-
-  .custom-tabs :deep(.ant-tabs-nav-more) {
-    /* Style cho more button */
-    display: block !important;
-    padding: 6px 8px;
-    background: #f5f5f5;
-    border-radius: 4px;
-    margin-left: 4px;
   }
 }
 

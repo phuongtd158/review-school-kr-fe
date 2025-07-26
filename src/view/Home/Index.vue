@@ -23,6 +23,9 @@
         <div class="mt-3 md:mt-4">
           <search-dropdown :input-addition-class="'!py-3 !pl-4 !pr-28'" :show-button-search="true" />
         </div>
+        <div class="mt-3 md:mt-4">
+          <recently-viewed />
+        </div>
       </div>
 
       <!-- Right illustration - chỉ hiển thị trên desktop -->
@@ -45,59 +48,117 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useLocalI18n } from '@/composables/use-i18n';
 import { callApiTest } from '@/service/home';
 import SearchDropdown from '@/components/SearchDropdown/Index.vue';
 import SchoolTabs from '@/components/SchoolTab/Index.vue';
 import NewestReviews from '@/components/NewestReviews/Index.vue';
+import RecentlyViewed from '@/components/RecentlyViewed/Index.vue';
+
+const TYPING_SPEED = 100;
+const ERASING_SPEED = 50;
+const PAUSE_DURATION = 1000;
+const RESTART_DELAY = 100;
 
 export default defineComponent({
-  components: { NewestReviews, SchoolTabs, SearchDropdown },
+  components: { RecentlyViewed, NewestReviews, SchoolTabs, SearchDropdown },
   setup() {
-    const { t } = useLocalI18n();
+    const { t, locale } = useLocalI18n();
     const typingText = ref('');
-    const texts = ['trường học', 'giáo viên', 'học sinh'];
-    let currentTextIndex = 0;
+    const texts = ref<string[]>([]);
+    const currentTextIndex = ref(0);
 
-    const typeWriter = async () => {
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const fullText = texts[currentTextIndex];
-        // Gõ từng ký tự
-        for (let i = 0; i <= fullText.length; i++) {
-          typingText.value = fullText.slice(0, i);
-          await new Promise(resolve => setTimeout(resolve, 100)); // tốc độ gõ
-        }
+    let abortController: AbortController | null = null;
 
-        await new Promise(resolve => setTimeout(resolve, 1000)); // dừng lại 1s
+    const TEXT_KEYS = ['truong_hoc', 'giang_vien', 'sinh_vien'];
 
-        // Xóa từng ký tự
-        for (let i = fullText.length; i >= 0; i--) {
-          typingText.value = fullText.slice(0, i);
-          await new Promise(resolve => setTimeout(resolve, 50)); // tốc độ xóa
-        }
-
-        // Chuyển sang text tiếp theo
-        currentTextIndex = (currentTextIndex + 1) % texts.length;
-      }
+    const updateTexts = (): void => {
+      texts.value = TEXT_KEYS.map(key => t(key));
     };
 
-    const testApi = async () => {
+    const delay = (ms: number, signal?: AbortSignal): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(resolve, ms);
+        signal?.addEventListener('abort', () => {
+          clearTimeout(timeoutId);
+          reject(new DOMException('Aborted', 'AbortError'));
+        });
+      });
+    };
+
+    const typeWriter = async (): Promise<void> => {
+      if (abortController) {
+        abortController.abort();
+      }
+
+      abortController = new AbortController();
+      const { signal } = abortController;
+
       try {
-        const { body } = await callApiTest({ code: 'code', name: 'name' });
-        console.log(body);
-      } catch (e) {
-        console.log(e);
+        while (!signal.aborted) {
+          const fullText = texts.value[currentTextIndex.value] || '';
+
+          // Gõ từng ký tự
+          for (let i = 0; i <= fullText.length; i++) {
+            if (signal.aborted) return;
+            typingText.value = fullText.slice(0, i);
+            await delay(TYPING_SPEED, signal);
+          }
+
+          // Dừng
+          await delay(PAUSE_DURATION, signal);
+
+          // Xóa từng ký tự
+          for (let i = fullText.length; i >= 0; i--) {
+            if (signal.aborted) return;
+            typingText.value = fullText.slice(0, i);
+            await delay(ERASING_SPEED, signal);
+          }
+
+          // Sang chuỗi tiếp theo
+          currentTextIndex.value = (currentTextIndex.value + 1) % texts.value.length;
+        }
+      } catch (error) {
+        // Handle abort gracefully
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return;
+        }
+        console.error('Typewriter animation error:', error);
       }
     };
 
-    onMounted(() => {
-      typeWriter();
-      testApi();
+    // Debounced locale watcher
+    let localeTimeout: NodeJS.Timeout;
+    watch(locale, () => {
+      clearTimeout(localeTimeout);
+      localeTimeout = setTimeout(() => {
+        updateTexts();
+        currentTextIndex.value = 0;
+        typeWriter();
+      }, RESTART_DELAY);
     });
 
-    return { t, typingText };
+    onMounted(async () => {
+      updateTexts();
+      typeWriter();
+
+      // Call API without blocking UI
+      await callApiTest({ code: 'code', name: 'name' });
+    });
+
+    onUnmounted(() => {
+      // Cleanup
+      if (abortController) {
+        abortController.abort();
+      }
+      clearTimeout(localeTimeout);
+    });
+
+    return {
+      t,
+      typingText,
+    };
   },
 });
 </script>
